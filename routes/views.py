@@ -21,6 +21,7 @@ class AddEdgeView(APIView):
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
+    
 class ShortestRouteView(APIView):
 
     def post(self, request):
@@ -53,8 +54,11 @@ class ShortestRouteView(APIView):
                     (edge.destination.name, edge.latency)
                 )
 
-            if destination.name not in graph:
-                graph[destination.name] = []
+            all_nodes = Node.objects.all()
+
+            for node in all_nodes:
+                if node.name not in graph:
+                    graph[node.name] = []
 
             distances = {}
             previous = {}
@@ -125,7 +129,7 @@ class ShortestRouteView(APIView):
             return Response(
                 {"error": "Invalid node name"},
                 status=status.HTTP_400_BAD_REQUEST
-            )
+            )    
         
 
 class RouteHistoryView(APIView):
